@@ -1,7 +1,16 @@
 {
-  "name": "@ts-admin/core",
+  "name": "@uiaoin/ts-admin-core",
   "version": "1.0.0",
   "description": "Core modules for TS Admin Framework",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uiaoin/ts-admin.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "main": "./dist/index.js",
   "module": "./src/index.ts",
   "types": "./dist/index.d.ts",
@@ -40,8 +49,18 @@
     "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/passport": "^10.0.0",
+    "@nestjs/swagger": "^7.0.0",
+    "@prisma/client": "^5.0.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^4.17.21",
     "@types/passport-jwt": "^4.0.1",
+    "ioredis": "^5.0.0",
+    "passport-jwt": "^4.0.1",
+    "rxjs": "^7.8.0",
     "typescript": "^5.3.0"
   }
 }

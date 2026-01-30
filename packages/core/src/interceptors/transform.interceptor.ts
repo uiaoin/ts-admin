@@ -15,7 +15,7 @@ export interface ApiResult<T> {
 export class TransformInterceptor<T> implements NestInterceptor<T, ApiResult<T>> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<ApiResult<T>> {
     return next.handle().pipe(
-      map((data) => ({
+      map((data: T) => ({
         code: 200,
         message: 'success',
         data,

@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.0",
-    "@ts-admin/types": "workspace:*",
-    "@ts-admin/utils": "workspace:*",
+    "@uiaoin/ts-admin-types": "^1.0.0",
+    "@uiaoin/ts-admin-utils": "^1.0.0",
     "ant-design-vue": "^4.1.0",
     "axios": "^1.6.0",
     "dayjs": "^1.11.0",

@@ -84,7 +84,7 @@ export class OperLogInterceptor implements NestInterceptor {
     const operType = METHOD_TYPE_MAP[method] || 'OTHER';
 
     return next.handle().pipe(
-      tap((data) => {
+      tap((data: any) => {
         // 成功时记录日志
         const duration = Date.now() - startTime;
         this.logService!.createOperLog({
@@ -102,7 +102,7 @@ export class OperLogInterceptor implements NestInterceptor {
           username: user?.username,
         }).catch(() => {});
       }),
-      catchError((error) => {
+      catchError((error: any) => {
         // 失败时也记录日志
         const duration = Date.now() - startTime;
         this.logService!.createOperLog({

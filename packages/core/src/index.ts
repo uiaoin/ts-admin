@@ -20,8 +20,8 @@ export * from './strategies/jwt.strategy';
 export * from './strategies/jwt-refresh.strategy';
 
 // Interceptors
-export * from './interceptors/transform.interceptor';
-export * from './interceptors/oper-log.interceptor';
+export { TransformInterceptor, ApiResult } from './interceptors/transform.interceptor';
+export { OperLogInterceptor, OPER_LOG_SERVICE, IOperLogService } from './interceptors/oper-log.interceptor';
 
 // Filters
 export * from './filters/http-exception.filter';

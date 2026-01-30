@@ -1,7 +1,7 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiResult } from '@ts-admin/types';
+import { ApiResult } from '@uiaoin/ts-admin-types';
 
 /**
  * 统一响应格式拦截器

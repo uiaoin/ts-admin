@@ -1,5 +1,5 @@
 import { http } from '@/utils/request';
-import type { PaginationResult } from '@ts-admin/types';
+import type { PaginationResult } from '@uiaoin/ts-admin-types';
 
 export interface UserQueryParams {
   page?: number;

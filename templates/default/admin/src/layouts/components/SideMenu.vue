@@ -18,7 +18,7 @@
 import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore, useAppStore } from '@/stores';
-import { listToTree } from '@ts-admin/utils';
+import { listToTree } from '@uiaoin/ts-admin-utils';
 import SubMenu from './SubMenu.vue';
 import MenuItem from './MenuItem.vue';
 

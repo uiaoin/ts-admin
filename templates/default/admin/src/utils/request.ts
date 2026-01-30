@@ -2,7 +2,7 @@ import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { message } from 'ant-design-vue';
 import { useUserStore } from '@/stores/user';
 import router from '@/router';
-import type { ApiResult } from '@ts-admin/types';
+import type { ApiResult } from '@uiaoin/ts-admin-types';
 
 // 创建axios实例
 const request = axios.create({

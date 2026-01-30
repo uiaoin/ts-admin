@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { login as loginApi, logout as logoutApi, getUserInfo, getUserMenus, refreshToken } from '@/api/auth';
-import type { LoginRequest, UserInfo, MenuInfo } from '@ts-admin/types';
+import type { LoginRequest, UserInfo, MenuInfo } from '@uiaoin/ts-admin-types';
 
 export const useUserStore = defineStore(
   'user',

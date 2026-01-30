@@ -1,8 +1,23 @@
 # TS Admin Project
 
-基于 [TS Admin Framework](https://github.com/your-username/ts-admin) 创建的项目。
+基于 [TS Admin Framework](https://github.com/uiaoin/ts-admin) 创建的项目。
 
 ## 快速开始
+
+### 1. 配置 GitHub Packages 访问
+
+本项目使用 GitHub Packages 托管的 NPM 包，需要先配置访问权限：
+
+```bash
+# 登录 GitHub Packages（需要 GitHub Token，权限: read:packages）
+# 获取 Token: https://github.com/settings/tokens/new
+npm login --registry=https://npm.pkg.github.com
+# Username: 你的 GitHub 用户名
+# Password: 你的 GitHub Token
+# Email: 你的邮箱
+```
+
+### 2. 安装和启动
 
 ```bash
 # 安装依赖

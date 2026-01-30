@@ -8,17 +8,6 @@ export interface JwtPayload {
   dataScope?: number;
 }
 
-export interface DataScopeOptions {
-  deptAlias?: string;
-  userAlias?: string;
-}
-
-export interface ApiResultOptions {
-  type?: any;
-  isArray?: boolean;
-  isPaginated?: boolean;
-}
-
 export interface OperLogData {
   module: string;
   type: string;

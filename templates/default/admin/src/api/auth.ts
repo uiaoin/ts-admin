@@ -1,5 +1,5 @@
 import { http } from '@/utils/request';
-import type { LoginRequest, LoginResult, UserInfo, MenuInfo } from '@ts-admin/types';
+import type { LoginRequest, LoginResult, UserInfo, MenuInfo } from '@uiaoin/ts-admin-types';
 
 /**
  * 登录

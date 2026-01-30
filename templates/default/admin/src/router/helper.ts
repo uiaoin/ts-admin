@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
-import type { MenuInfo } from '@ts-admin/types';
-import { listToTree } from '@ts-admin/utils';
+import type { MenuInfo } from '@uiaoin/ts-admin-types';
+import { listToTree } from '@uiaoin/ts-admin-utils';
 
 // 视图模块
 const viewModules = import.meta.glob('../views/**/*.vue');
