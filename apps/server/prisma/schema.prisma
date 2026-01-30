@@ -1,0 +1,267 @@
+// Prisma Schema
+// 文档: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// 用户表
+// ==========================================
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique @db.VarChar(50)
+  password  String?  @db.VarChar(100) // 微信登录用户可能无密码
+  nickname  String?  @db.VarChar(50)
+  email     String?  @db.VarChar(100)
+  phone     String?  @db.VarChar(20)
+  avatar    String?  @db.VarChar(255)
+  gender    Int      @default(0) // 0未知 1男 2女
+  status    Int      @default(1) // 0禁用 1正常
+  deptId    Int?     @map("dept_id")
+  remark    String?  @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  dept  Dept?      @relation(fields: [deptId], references: [id])
+  roles UserRole[]
+
+  // 微信绑定 (后续启用)
+  wechatOpenId  String? @unique @map("wechat_open_id")
+  wechatUnionId String? @map("wechat_union_id")
+
+  @@map("sys_user")
+}
+
+// ==========================================
+// 角色表
+// ==========================================
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(50)
+  code      String   @unique @db.VarChar(50)
+  sort      Int      @default(0)
+  status    Int      @default(1) // 0禁用 1正常
+  dataScope Int      @default(1) @map("data_scope") // 1全部 2本部门及以下 3本部门 4仅本人 5自定义
+  remark    String?  @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  users UserRole[]
+  menus RoleMenu[]
+  depts RoleDept[] // 自定义数据权限
+
+  @@map("sys_role")
+}
+
+// ==========================================
+// 用户-角色关联表
+// ==========================================
+model UserRole {
+  userId Int @map("user_id")
+  roleId Int @map("role_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("sys_user_role")
+}
+
+// ==========================================
+// 菜单/权限表 (树形结构)
+// ==========================================
+model Menu {
+  id         Int      @id @default(autoincrement())
+  parentId   Int      @default(0) @map("parent_id")
+  name       String   @db.VarChar(50)
+  path       String?  @db.VarChar(200)
+  component  String?  @db.VarChar(255)
+  redirect   String?  @db.VarChar(255)
+  permission String?  @db.VarChar(100) // 权限标识 如 system:user:list
+  type       Int // 0目录 1菜单 2按钮
+  icon       String?  @db.VarChar(100)
+  sort       Int      @default(0)
+  visible    Int      @default(1) // 0隐藏 1显示
+  status     Int      @default(1) // 0禁用 1正常
+  isExternal Int      @default(0) @map("is_external") // 是否外链
+  isCache    Int      @default(1) @map("is_cache") // 是否缓存
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  roles RoleMenu[]
+
+  @@map("sys_menu")
+}
+
+// ==========================================
+// 角色-菜单关联表
+// ==========================================
+model RoleMenu {
+  roleId Int @map("role_id")
+  menuId Int @map("menu_id")
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, menuId])
+  @@map("sys_role_menu")
+}
+
+// ==========================================
+// 部门表 (树形结构)
+// ==========================================
+model Dept {
+  id        Int      @id @default(autoincrement())
+  parentId  Int      @default(0) @map("parent_id")
+  ancestors String?  @db.VarChar(500) // 祖级列表 0,1,2
+  name      String   @db.VarChar(50)
+  sort      Int      @default(0)
+  leader    String?  @db.VarChar(50)
+  phone     String?  @db.VarChar(20)
+  email     String?  @db.VarChar(100)
+  status    Int      @default(1) // 0禁用 1正常
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  users User[]
+  roles RoleDept[]
+
+  @@map("sys_dept")
+}
+
+// ==========================================
+// 角色-部门关联表 (自定义数据权限)
+// ==========================================
+model RoleDept {
+  roleId Int @map("role_id")
+  deptId Int @map("dept_id")
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  dept Dept @relation(fields: [deptId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, deptId])
+  @@map("sys_role_dept")
+}
+
+// ==========================================
+// 字典类型表
+// ==========================================
+model DictType {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  type      String   @unique @db.VarChar(100)
+  status    Int      @default(1)
+  remark    String?  @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  items DictData[]
+
+  @@map("sys_dict_type")
+}
+
+// ==========================================
+// 字典数据表
+// ==========================================
+model DictData {
+  id        Int      @id @default(autoincrement())
+  dictType  String   @map("dict_type") @db.VarChar(100)
+  label     String   @db.VarChar(100)
+  value     String   @db.VarChar(100)
+  sort      Int      @default(0)
+  status    Int      @default(1)
+  isDefault Int      @default(0) @map("is_default")
+  remark    String?  @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 关联
+  type DictType @relation(fields: [dictType], references: [type])
+
+  @@map("sys_dict_data")
+}
+
+// ==========================================
+// 系统配置表
+// ==========================================
+model Config {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  key       String   @unique @db.VarChar(100)
+  value     String   @db.VarChar(500)
+  type      Int      @default(0) // 0系统内置 1用户配置
+  remark    String?  @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sys_config")
+}
+
+// ==========================================
+// 操作日志表
+// ==========================================
+model OperLog {
+  id            Int      @id @default(autoincrement())
+  module        String   @db.VarChar(50) // 模块
+  type          String   @db.VarChar(20) // 操作类型
+  method        String   @db.VarChar(200) // 方法名
+  requestMethod String   @map("request_method") @db.VarChar(10) // 请求方式
+  url           String   @db.VarChar(500) // 请求URL
+  ip            String?  @db.VarChar(50)
+  location      String?  @db.VarChar(255)
+  param         String?  @db.Text // 请求参数
+  result        String?  @db.Text // 返回结果
+  status        Int      @default(1) // 0失败 1成功
+  errorMsg      String?  @map("error_msg") @db.Text
+  duration      Int? // 耗时ms
+  userId        Int?     @map("user_id")
+  username      String?  @db.VarChar(50)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("sys_oper_log")
+}
+
+// ==========================================
+// 登录日志表
+// ==========================================
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  username  String   @db.VarChar(50)
+  ip        String?  @db.VarChar(50)
+  location  String?  @db.VarChar(255)
+  browser   String?  @db.VarChar(50)
+  os        String?  @db.VarChar(50)
+  status    Int      @default(1) // 0失败 1成功
+  msg       String?  @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("sys_login_log")
+}
+
+// ==========================================
+// 文件表
+// ==========================================
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255) // 原始文件名
+  path      String   @db.VarChar(500) // 存储路径
+  url       String   @db.VarChar(500) // 访问URL
+  size      Int // 文件大小
+  mimeType  String   @map("mime_type") @db.VarChar(100)
+  storage   String   @db.VarChar(20) // local/oss/cos
+  userId    Int?     @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("sys_file")
+}

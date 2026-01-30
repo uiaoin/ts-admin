@@ -1,0 +1,36 @@
+{
+  "name": "ts-admin-framework",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TypeScript全栈后台管理框架 - NestJS + Vue3 + Ant Design Vue",
+  "scripts": {
+    "predev": "pnpm build:packages",
+    "dev": "turbo run dev",
+    "dev:server": "turbo run dev --filter=server",
+    "dev:admin": "turbo run dev --filter=admin",
+    "build:packages": "pnpm --filter @ts-admin/types build && pnpm --filter @ts-admin/utils build",
+    "build": "turbo run build",
+    "build:server": "turbo run build --filter=server",
+    "build:admin": "turbo run build --filter=admin",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,vue,js,json,md}\"",
+    "db:generate": "pnpm --filter server prisma generate",
+    "db:migrate": "pnpm --filter server prisma migrate dev",
+    "db:push": "pnpm --filter server prisma db push",
+    "db:seed": "pnpm --filter server prisma db seed",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:down": "docker-compose -f docker-compose.dev.yml down",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "prettier": "^3.1.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}
