@@ -8,7 +8,8 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["@ts-admin/core#build", "@ts-admin/types#build", "@ts-admin/utils#build"]
     },
     "lint": {
       "dependsOn": ["^build"]

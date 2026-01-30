@@ -10,23 +10,48 @@ TypeScript 全栈后台管理框架，基于 NestJS + Vue3 + Ant Design Vue，�
 ## 特性
 
 - **全栈 TypeScript** - 前后端统一语言，类型安全
+- **模块化设计** - 核心模块可独立发布为 NPM 包
 - **RBAC 权限** - 用户、角色、菜单、数据权限完整实现
 - **JWT 认证** - 双 Token 机制，安全可靠
 - **微信登录** - 开箱即用的微信网页授权
 - **文件存储** - 支持本地/七牛云，可扩展
 - **系统监控** - 服务器状态、缓存、日志一目了然
-- **AI 友好** - 结构清晰，便于 AI 辅助开发
+- **CLI 工具** - 一键创建新项目
 
-## 技术栈
+## 项目结构
 
-| 层级 | 技术 |
-|------|------|
-| 后端 | NestJS + Prisma + PostgreSQL + Redis |
-| 前端 | Vue3 + Ant Design Vue + Pinia + Vite |
-| 认证 | JWT (双Token机制) |
-| 部署 | Docker / Docker Compose |
+```
+ts-admin/
+├── packages/
+│   ├── core/           # @ts-admin/core - 核心模块
+│   ├── types/          # @ts-admin/types - 共享类型
+│   ├── utils/          # @ts-admin/utils - 工具函数
+│   └── create-app/     # create-ts-admin - CLI工具
+├── templates/
+│   └── default/        # 默认模板
+│       ├── server/     # NestJS 后端
+│       └── admin/      # Vue3 管理后台
+├── examples/           # 示例项目
+└── docs/               # 项目文档
+```
 
 ## 快速开始
+
+### 方式一：使用 CLI 创建项目（推荐）
+
+```bash
+# 使用 npx
+npx create-ts-admin my-project
+
+# 或使用 pnpm
+pnpm create ts-admin my-project
+```
+
+### 方式二：使用 GitHub Template
+
+1. 点击 GitHub 仓库的 "Use this template" 按钮
+2. 克隆你的新仓库
+3. 按下面的步骤配置和启动
 
 ### 环境要求
 
@@ -35,33 +60,27 @@ TypeScript 全栈后台管理框架，基于 NestJS + Vue3 + Ant Design Vue，�
 - PostgreSQL >= 14
 - Redis >= 6
 
-### 安装
+### 安装和启动
 
 ```bash
-# 克隆项目
-git clone https://github.com/your-username/ts-admin.git
-cd ts-admin
-
 # 安装依赖
 pnpm install
 
 # 启动数据库（Docker）
-docker-compose -f docker-compose.dev.yml up -d
+pnpm docker:dev
 
 # 配置环境变量
-cp .env.example apps/server/.env
-# 编辑 apps/server/.env 配置数据库等信息
+cp .env.example templates/default/server/.env
+# 编辑 .env 配置数据库等信息
 
 # 初始化数据库
-pnpm build:packages
-cd apps/server
-npx prisma db push
-npx prisma db seed
-cd ../..
+pnpm db:push
+pnpm db:seed
 
 # 启动开发服务
-pnpm dev:server  # 后端 http://localhost:3000
-pnpm dev:admin   # 前端 http://localhost:5173
+pnpm dev
+# 后端 http://localhost:3000
+# 前端 http://localhost:5173
 ```
 
 ### 默认账号
@@ -71,25 +90,35 @@ pnpm dev:admin   # 前端 http://localhost:5173
 | 超级管理员 | admin | admin123 |
 | 普通用户 | test | admin123 |
 
-## 项目结构
+## NPM 包
 
+### @ts-admin/core
+
+NestJS 核心模块，包含：
+- Prisma/Redis 模块
+- JWT 认证 Guards/Strategies
+- 权限装饰器
+- 统一响应拦截器
+- 异常过滤器
+
+```bash
+pnpm add @ts-admin/core
 ```
-ts-admin/
-├── apps/
-│   ├── server/          # NestJS 后端
-│   │   ├── prisma/      # 数据库 Schema
-│   │   └── src/
-│   │       ├── common/  # 公共模块
-│   │       └── modules/ # 业务模块
-│   └── admin/           # Vue3 管理后台
-│       └── src/
-│           ├── api/     # API 接口
-│           ├── stores/  # 状态管理
-│           └── views/   # 页面组件
-├── packages/
-│   ├── types/           # 共享类型
-│   └── utils/           # 共享工具
-└── docs/                # 项目文档
+
+### @ts-admin/types
+
+共享 TypeScript 类型定义
+
+```bash
+pnpm add @ts-admin/types
+```
+
+### @ts-admin/utils
+
+通用工具函数（树结构处理等）
+
+```bash
+pnpm add @ts-admin/utils
 ```
 
 ## 功能模块
@@ -110,8 +139,6 @@ ts-admin/
 ### 扩展功能
 - 微信网页授权
 - 七牛云文件存储
-- 阿里云 OSS（待实现）
-- 腾讯云 COS（待实现）
 
 ## API 文档
 
@@ -121,54 +148,26 @@ ts-admin/
 http://localhost:3000/api/docs
 ```
 
-## 配置说明
+## 开发指南
 
-主要环境变量（`apps/server/.env`）：
-
-```env
-# 数据库
-DATABASE_URL="postgresql://user:pass@localhost:5432/ts_admin"
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# JWT
-JWT_SECRET=your-secret-key
-JWT_ACCESS_EXPIRES=15m
-JWT_REFRESH_EXPIRES=7d
-
-# 文件存储 (local/qiniu)
-FILE_STORAGE=local
-
-# 微信公众号（可选）
-WECHAT_APP_ID=
-WECHAT_APP_SECRET=
-```
-
-## 部署
-
-### Docker 部署
+### 发布 NPM 包
 
 ```bash
-# 构建镜像
-docker-compose build
+# 构建所有包
+pnpm build:packages
 
-# 启动服务
-docker-compose up -d
+# 发布（需要 NPM 账号权限）
+cd packages/core && npm publish
+cd packages/types && npm publish
+cd packages/utils && npm publish
+cd packages/create-app && npm publish
 ```
 
-### 手动部署
+### 添加新功能到模板
 
-```bash
-# 构建
-pnpm build
-
-# 启动后端
-cd apps/server && node dist/main.js
-
-# 前端静态文件部署到 Nginx
-```
+1. 在 `templates/default/` 中开发新功能
+2. 测试通过后更新版本号
+3. 提取可复用代码到 `packages/core`
 
 ## 贡献
 
@@ -177,10 +176,3 @@ cd apps/server && node dist/main.js
 ## 许可证
 
 [MIT](LICENSE)
-
-## 致谢
-
-- [NestJS](https://nestjs.com/)
-- [Vue.js](https://vuejs.org/)
-- [Ant Design Vue](https://antdv.com/)
-- [Prisma](https://www.prisma.io/)
