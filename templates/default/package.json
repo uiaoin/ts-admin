@@ -1,0 +1,27 @@
+{
+  "name": "ts-admin-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "基于 TS Admin Framework 的项目",
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:admin\"",
+    "dev:server": "pnpm --filter server dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "build": "pnpm --filter server build && pnpm --filter admin build",
+    "build:server": "pnpm --filter server build",
+    "build:admin": "pnpm --filter admin build",
+    "db:generate": "pnpm --filter server prisma generate",
+    "db:migrate": "pnpm --filter server prisma migrate dev",
+    "db:push": "pnpm --filter server prisma db push",
+    "db:seed": "pnpm --filter server prisma db seed",
+    "lint": "pnpm --filter \"*\" lint",
+    "clean": "pnpm --filter \"*\" clean"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
